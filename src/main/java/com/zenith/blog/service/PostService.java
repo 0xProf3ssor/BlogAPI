@@ -2,6 +2,7 @@ package com.zenith.blog.service;
 
 import com.zenith.blog.request.PostRequest;
 import com.zenith.blog.response.PostResponse;
+import com.zenith.blog.util.APIResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,9 +20,15 @@ public interface PostService {
     //Update Post
     PostResponse updateById(Long id, PostRequest postRequest);
 
+    //Update Post Images
+    PostResponse addPostImages(Long id, MultipartFile[] images);
+
+    //Delete Post Image
+    PostResponse deletePostImage(Long postId, Long imgId);
+
     //Get post by User id
     List<PostResponse> getByUserId(Long id);
 
     //Delete by id
-    void deleteById(Long id);
+    APIResponse deleteById(Long id);
 }

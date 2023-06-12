@@ -13,6 +13,8 @@ public class CheckEmailExists implements ConstraintValidator<EmailNotExists, Str
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
+
         return !userRepository.existsByEmail(email);
+
     }
 }

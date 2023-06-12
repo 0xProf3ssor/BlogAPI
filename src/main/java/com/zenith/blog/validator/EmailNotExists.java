@@ -13,5 +13,4 @@ public @interface EmailNotExists {
     String message() default "Email already exists";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-
 }

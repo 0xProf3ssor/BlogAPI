@@ -4,10 +4,9 @@ import com.zenith.blog.request.PostRequest;
 import com.zenith.blog.response.PostResponse;
 import com.zenith.blog.service.PostService;
 import com.zenith.blog.util.APIResponse;
+import com.zenith.blog.util.GetAuthenticatedUserDetails;
 import jakarta.validation.Valid;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,9 +17,11 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class PostController {
     private final PostService postService;
+    private final GetAuthenticatedUserDetails getAuthenticatedUserDetails;
 
-    public PostController(PostService postService) {
+    public PostController(PostService postService, GetAuthenticatedUserDetails getAuthenticatedUserDetails) {
         this.postService = postService;
+        this.getAuthenticatedUserDetails = getAuthenticatedUserDetails;
     }
 
     //Get all posts
@@ -30,9 +31,25 @@ public class PostController {
     }
 
     //Create post
-    @PostMapping(value = "/users/{user_id}/posts")
-    public ResponseEntity<PostResponse> createPost(@RequestPart(value = "images", required = false) MultipartFile[] images, @RequestPart("post") PostRequest postRequest, @PathVariable("user_id") Long userId){
+    @PostMapping(value = "/posts")
+    public ResponseEntity<PostResponse> createPost(@RequestPart(value = "images", required = false) MultipartFile[] images, @Valid @RequestPart("post") PostRequest postRequest){
+
+        //Logged in user ID
+        Long userId = getAuthenticatedUserDetails.getDetails().getId();
+
         return new ResponseEntity<>(postService.create(postRequest, images, userId), HttpStatus.CREATED);
+    }
+
+    //Update post by id
+    @PutMapping("/posts/{id}")
+    public ResponseEntity<PostResponse> updateById(@PathVariable Long id, @Valid @RequestBody PostRequest postRequest){
+        return new ResponseEntity<>(postService.updateById(id, postRequest), HttpStatus.OK);
+    }
+
+    //Add image to post
+    @PutMapping("/posts/{id}/add-image")
+    public ResponseEntity<PostResponse> addImage(@PathVariable("id") Long id, @RequestPart("images") MultipartFile[] images){
+        return ResponseEntity.ok(postService.addPostImages(id, images));
     }
 
     //Get by id
@@ -46,11 +63,16 @@ public class PostController {
     public ResponseEntity<List<PostResponse>> getByUserId(@PathVariable("user_id") Long id){
         return ResponseEntity.ok(postService.getByUserId(id));
     }
+    //Delete Post Image
+    @PutMapping("/posts/{post_id}/images/{image_id}")
+    public ResponseEntity<PostResponse> deletePostImage(@PathVariable("post_id") Long postId, @PathVariable("image_id") Long imgId){
+        return ResponseEntity.ok(postService.deletePostImage(postId, imgId));
+    }
 
     //Delete by ID
     @DeleteMapping("/posts/{id}")
     public ResponseEntity<APIResponse> deletePostById(@PathVariable("id") Long id){
-        postService.deleteById(id);
-        return ResponseEntity.ok(new APIResponse(true, "Deleted", "Post deleted successfully!"));
+
+        return ResponseEntity.ok(postService.deleteById(id));
     }
 }

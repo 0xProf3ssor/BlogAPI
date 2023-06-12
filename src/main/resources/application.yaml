@@ -15,3 +15,7 @@ spring:
 post:
   image:
     path: upload
+application:
+  jwt:
+    secrete: aivrOF9QScLe8PHPijLAkgBlaucl0SxeTnYQGHo5IQln40PwdNYLBoz80XUk5Owd
+    expiration: 43200000

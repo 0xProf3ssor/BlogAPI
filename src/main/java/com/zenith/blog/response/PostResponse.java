@@ -1,5 +1,6 @@
 package com.zenith.blog.response;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class PostResponse {
@@ -7,9 +8,27 @@ public class PostResponse {
     private String text;
     private UserResponse user;
     private List<PostImageResponse> images;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
 
     public List<PostImageResponse> getImages() {
         return images;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public void setImages(List<PostImageResponse> images) {

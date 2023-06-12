@@ -1,5 +1,6 @@
 package com.zenith.blog.request;
 
+import com.zenith.blog.model.Role;
 import com.zenith.blog.validator.EmailNotExists;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
@@ -7,7 +8,7 @@ import jakarta.validation.constraints.Size;
 
 public class UserRequest{
         @NotEmpty(message = "Name is required")
-        @Size(min = 3, max = 100, message = "Name length must be between 3-12 characters")
+        @Size(min = 3, max = 50, message = "Name length must be between 3-12 characters")
         private String name;
         @NotEmpty(message = "Email is required")
         @Email(message = "Email is not valid")

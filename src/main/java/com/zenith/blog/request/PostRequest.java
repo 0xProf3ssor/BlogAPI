@@ -1,13 +1,12 @@
 package com.zenith.blog.request;
 
 
-import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotEmpty;
-import org.springframework.web.multipart.MultipartFile;
+import jakarta.validation.constraints.Size;
 
 public class PostRequest {
     @NotEmpty(message = "Post text is required")
-    @Max(value = 500, message = "Max 500 characters allowed")
+    @Size(min = 10, max = 500, message = "Range 10-500")
     private String text;
 
     public String getText() {
