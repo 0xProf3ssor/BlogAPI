@@ -4,7 +4,6 @@ import com.zenith.blog.request.PostRequest;
 import com.zenith.blog.response.PostResponse;
 import com.zenith.blog.service.PostService;
 import com.zenith.blog.util.APIResponse;
-import com.zenith.blog.util.GetAuthenticatedUserDetails;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,11 +16,9 @@ import java.util.List;
 @RequestMapping("/api/v1")
 public class PostController {
     private final PostService postService;
-    private final GetAuthenticatedUserDetails getAuthenticatedUserDetails;
 
-    public PostController(PostService postService, GetAuthenticatedUserDetails getAuthenticatedUserDetails) {
+    public PostController(PostService postService) {
         this.postService = postService;
-        this.getAuthenticatedUserDetails = getAuthenticatedUserDetails;
     }
 
     //Get all posts
@@ -34,10 +31,7 @@ public class PostController {
     @PostMapping(value = "/posts")
     public ResponseEntity<PostResponse> createPost(@RequestPart(value = "images", required = false) MultipartFile[] images, @Valid @RequestPart("post") PostRequest postRequest){
 
-        //Logged in user ID
-        Long userId = getAuthenticatedUserDetails.getDetails().getId();
-
-        return new ResponseEntity<>(postService.create(postRequest, images, userId), HttpStatus.CREATED);
+        return new ResponseEntity<>(postService.create(postRequest, images), HttpStatus.CREATED);
     }
 
     //Update post by id

@@ -19,10 +19,31 @@ public class Post {
     private List<PostImage> images;
     @ManyToOne
     private User user;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Comment> comments;
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<React> reacts;
     @CreationTimestamp(source = SourceType.DB)
     private LocalDateTime createdAt;
     @UpdateTimestamp(source = SourceType.DB)
     private LocalDateTime updatedAt;
+
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public List<React> getReacts() {
+        return reacts;
+    }
+
+    public void setReacts(List<React> reacts) {
+        this.reacts = reacts;
+    }
 
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -71,5 +92,13 @@ public class Post {
 
     public void setImages(List<PostImage> images) {
         this.images = images;
+    }
+
+    public Post(String text, User user) {
+        this.text = text;
+        this.user = user;
+    }
+
+    public Post() {
     }
 }

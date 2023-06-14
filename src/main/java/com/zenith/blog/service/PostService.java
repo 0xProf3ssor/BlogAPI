@@ -12,7 +12,7 @@ public interface PostService {
     List<PostResponse> getAll(Integer pageNumber, Integer pageSize);
 
     //Create post
-    PostResponse create(PostRequest postRequest, MultipartFile[] images, Long userId);
+    PostResponse create(PostRequest postRequest, MultipartFile[] images);
 
     //Get single post by id
     PostResponse getById(Long id);

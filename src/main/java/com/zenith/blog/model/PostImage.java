@@ -9,7 +9,7 @@ public class PostImage {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String path;
-    @ManyToOne()
+    @ManyToOne
     private  Post post;
 
     public Long getId() {

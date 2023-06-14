@@ -42,4 +42,12 @@ public class GlobalExceptionHandler {
         erroApiResponse.setMessage(ex.getMessage());
         return new ResponseEntity<>(erroApiResponse, HttpStatus.UNAUTHORIZED);
     }
+    @ExceptionHandler(OperationNotAllowedException.class)
+    public ResponseEntity<APIResponse> operationNotAllowedExceptionHandler(OperationNotAllowedException ex){
+        APIResponse erroApiResponse = new APIResponse();
+        erroApiResponse.setSuccess(false);
+        erroApiResponse.setStatus("Not Allowed");
+        erroApiResponse.setMessage(ex.getMessage());
+        return new ResponseEntity<>(erroApiResponse, HttpStatus.NOT_ACCEPTABLE);
+    }
 }

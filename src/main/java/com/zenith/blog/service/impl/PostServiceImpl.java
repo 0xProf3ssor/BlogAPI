@@ -3,7 +3,6 @@ package com.zenith.blog.service.impl;
 import com.zenith.blog.exception.ResourceNotFoundException;
 import com.zenith.blog.model.Post;
 import com.zenith.blog.model.PostImage;
-import com.zenith.blog.model.User;
 import com.zenith.blog.repository.PostRepository;
 import com.zenith.blog.repository.UserRepository;
 import com.zenith.blog.request.PostRequest;
@@ -12,6 +11,7 @@ import com.zenith.blog.service.PostService;
 import com.zenith.blog.util.APIResponse;
 import com.zenith.blog.util.FileDeleter;
 import com.zenith.blog.util.FileUploader;
+import com.zenith.blog.util.GetAuthenticatedUserDetails;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -27,16 +27,16 @@ import java.util.stream.Collectors;
 @Transactional
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
+    private final GetAuthenticatedUserDetails authenticatedUserDetails;
     private final ModelMapper modelMapper;
     private final FileUploader fileUploader;
     @Value("${post.image.path}")
     private String POST_IMAGE_UPLOAD_DIR;
     private final FileDeleter fileDeleter;
 
-    public PostServiceImpl(PostRepository postRepository, UserRepository userRepository, ModelMapper modelMapper, FileUploader fileUploader, FileDeleter fileDeleter) {
+    public PostServiceImpl(PostRepository postRepository, GetAuthenticatedUserDetails authenticatedUserDetails, ModelMapper modelMapper, FileUploader fileUploader, FileDeleter fileDeleter) {
         this.postRepository = postRepository;
-        this.userRepository = userRepository;
+        this.authenticatedUserDetails = authenticatedUserDetails;
         this.modelMapper = modelMapper;
         this.fileUploader = fileUploader;
         this.fileDeleter = fileDeleter;
@@ -54,16 +54,12 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostResponse create(PostRequest postRequest, MultipartFile[] images, Long userId) {
-        //Check user valid or not
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResourceNotFoundException("User", "id", userId.toString()));
-
-
+    public PostResponse create(PostRequest postRequest, MultipartFile[] images) {
         //Map to Post for saving into database
         Post post = modelMapper.map(postRequest, Post.class);
 
         //Add user to Post
-        post.setUser(user);
+        post.setUser(authenticatedUserDetails.getDetails());
 
         //Upload images if exists
         if(images != null && images.length > 0){
